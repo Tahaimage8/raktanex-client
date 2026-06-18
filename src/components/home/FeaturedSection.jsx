@@ -65,7 +65,7 @@ export default function FeaturedSection() {
 
           <h2 className="mt-5 text-4xl font-black tracking-tight text-slate-950 dark:text-white sm:text-5xl">
             Built to make blood donation
-            <span className="block bg-gradient-to-r from-red-600 to-rose-700 bg-clip-text text-transparent">
+            <span className="block bg-linear-to-r from-red-600 to-rose-700 bg-clip-text text-transparent">
               faster and easier
             </span>
           </h2>
@@ -115,7 +115,7 @@ export default function FeaturedSection() {
                   {feature.description}
                 </p>
 
-                <div className="mt-6 h-1 w-12 rounded-full bg-gradient-to-r from-red-600 to-rose-600 transition-all duration-300 group-hover:w-20" />
+                <div className="mt-6 h-1 w-12 rounded-full bg-linear-to-r from-red-600 to-rose-600 transition-all duration-300 group-hover:w-20" />
               </div>
             </motion.div>
           ))}
