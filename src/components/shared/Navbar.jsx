@@ -24,10 +24,20 @@ const Navbar = () => {
 
   const userName = user?.name || "Donor";
   const userEmail = user?.email || "donor@raktanex.com";
+  const userRole = user?.role || "donor";
   const userAvatar =
     user?.image || "https://i.ibb.co.com/4pDNDk1/avatar.png";
 
+  const dashboardLink = `/dashboard/${userRole}`;
+
+  const canSeeFunding = userRole === "volunteer";
+
   const navLinks = [
+    {
+      label: "Home",
+      href: "/",
+      show: true,
+    },
     {
       label: "Donation Requests",
       href: "/donation-requests",
@@ -36,7 +46,7 @@ const Navbar = () => {
     {
       label: "Funding",
       href: "/funding",
-      show: isLoggedIn,
+      show: canSeeFunding,
     },
     {
       label: "Search Donor",
@@ -76,10 +86,8 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 border-b border-red-100 bg-white/90 backdrop-blur-2xl">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-        {/* Logo */}
         <Logo />
 
-        {/* Desktop Menu */}
         <div className="hidden items-center gap-8 md:flex">
           {navLinks
             .filter((link) => link.show)
@@ -105,7 +113,6 @@ const Navbar = () => {
             ))}
         </div>
 
-        {/* Right Side */}
         <div className="flex items-center gap-3">
           {isPending ? (
             <p className="hidden text-sm font-bold text-slate-500 md:block">
@@ -179,12 +186,15 @@ const Navbar = () => {
                         <p className="truncate text-xs text-slate-500">
                           {userEmail}
                         </p>
+                        <p className="mt-1 text-xs font-bold capitalize text-red-600">
+                          {userRole}
+                        </p>
                       </div>
                     </div>
 
                     <div className="mt-2 space-y-1">
                       <Link
-                        href="/dashboard"
+                        href={dashboardLink}
                         onClick={() => setDropdownOpen(false)}
                         className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-red-50 hover:text-red-700"
                       >
@@ -206,7 +216,6 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* Mobile Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-red-100 bg-red-50 text-slate-800 md:hidden"
@@ -244,7 +253,6 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -300,12 +308,15 @@ const Navbar = () => {
                       <p className="truncate text-xs text-slate-500">
                         {userEmail}
                       </p>
+                      <p className="mt-1 text-xs font-bold capitalize text-red-600">
+                        {userRole}
+                      </p>
                     </div>
                   </div>
 
                   <div className="mt-3 grid grid-cols-2 gap-2">
                     <Link
-                      href="/dashboard"
+                      href={dashboardLink}
                       onClick={() => setMobileMenuOpen(false)}
                       className="rounded-2xl bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 transition hover:text-red-700"
                     >
