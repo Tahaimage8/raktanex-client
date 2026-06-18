@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/incompatible-library */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -12,6 +13,7 @@ import {
   FaTriangleExclamation,
   FaUserPlus,
 } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -66,7 +68,7 @@ const RegisterPage = () => {
   const [toast, setToast] = useState(null);
   const [fileName, setFileName] = useState("");
   const [avatarPreview, setAvatarPreview] = useState("");
-
+const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -176,18 +178,21 @@ const RegisterPage = () => {
     }
 
     console.log("User created:", authResult);
+showToast(
+  "success",
+  "Registration successful",
+  "Your donor account is ready."
+);
 
-    showToast(
-      "success",
-      "Registration successful",
-      "Your donor account is ready."
-    );
+reset();
+setFileName("");
+setAvatarPreview("");
+setLoading(false);
+setLoadingText("");
 
-    reset();
-    setFileName("");
-    setAvatarPreview("");
-    setLoading(false);
-    setLoadingText("");
+setTimeout(() => {
+  router.push("/login");
+}, 1200);
   };
 
   return (
