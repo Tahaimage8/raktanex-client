@@ -3,26 +3,29 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { authClient } from "@/lib/auth-client";
 import Logo from "./Logo";
 
-const Navbar = ({ user = null, onLogout }) => {
+const Navbar = () => {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const { data: session, isPending } = authClient.useSession();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const dropdownRef = useRef(null);
 
+  const user = session?.user;
   const isLoggedIn = Boolean(user);
 
-  const userName = user?.displayName || user?.name || "Donor";
+  const userName = user?.name || "Donor";
   const userEmail = user?.email || "donor@raktanex.com";
   const userAvatar =
-    user?.photoURL ||
-    user?.avatar ||
-    "https://i.ibb.co.com/4pDNDk1/avatar.png";
+    user?.image || "https://i.ibb.co.com/4pDNDk1/avatar.png";
 
   const navLinks = [
     {
@@ -47,20 +50,18 @@ const Navbar = ({ user = null, onLogout }) => {
   };
 
   const handleLogout = async () => {
-    if (onLogout) {
-      await onLogout();
-    }
+    await authClient.signOut();
 
     setDropdownOpen(false);
     setMobileMenuOpen(false);
+
+    router.push("/login");
+    router.refresh();
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
       }
     };
@@ -106,7 +107,11 @@ const Navbar = ({ user = null, onLogout }) => {
 
         {/* Right Side */}
         <div className="flex items-center gap-3">
-          {!isLoggedIn ? (
+          {isPending ? (
+            <p className="hidden text-sm font-bold text-slate-500 md:block">
+              Loading...
+            </p>
+          ) : !isLoggedIn ? (
             <Link
               href="/login"
               className="hidden rounded-full bg-linear-to-r from-red-600 via-rose-600 to-red-700 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-red-200 transition hover:shadow-red-300 md:inline-flex"
@@ -267,7 +272,11 @@ const Navbar = ({ user = null, onLogout }) => {
                   </Link>
                 ))}
 
-              {!isLoggedIn ? (
+              {isPending ? (
+                <div className="rounded-2xl bg-red-50 px-4 py-3 text-center text-sm font-bold text-red-600">
+                  Loading...
+                </div>
+              ) : !isLoggedIn ? (
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}

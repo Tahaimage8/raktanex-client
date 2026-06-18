@@ -10,6 +10,7 @@ const db = client.db("raktanex");
 export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
+    autoSignIn: false,
   },
 
   database: mongodbAdapter(db, {

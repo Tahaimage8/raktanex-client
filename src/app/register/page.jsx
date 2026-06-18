@@ -189,9 +189,10 @@ setFileName("");
 setAvatarPreview("");
 setLoading(false);
 setLoadingText("");
+await authClient.signOut();
 
 setTimeout(() => {
-  router.push("/login");
+    router.push("/login");
 }, 1200);
   };
 
