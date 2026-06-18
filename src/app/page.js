@@ -1,7 +1,8 @@
+import ContactUs from "@/components/home/ContactUs";
 import FeaturedSection from "@/components/home/FeaturedSection";
 import HeroBanner from "@/components/home/HeroBanner";
 import HowItWorks from "@/components/home/HowItWorks";
-import Image from "next/image";
+
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
   <HeroBanner/>
   <FeaturedSection/>
   <HowItWorks/>
+  <ContactUs/>
   </>
   );
 }
