@@ -9,7 +9,7 @@ const Logo = () => {
       <motion.div
         whileHover={{ scale: 1.06, rotate: -3 }}
         transition={{ type: "spring", stiffness: 250, damping: 18 }}
-        className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-red-600 via-rose-600 to-red-900 shadow-lg shadow-red-200"
+        className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-linear-to-br from-red-600 via-rose-600 to-red-900 shadow-lg shadow-red-200"
       >
         <svg
           viewBox="0 0 64 64"

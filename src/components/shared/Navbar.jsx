@@ -271,7 +271,7 @@ const Navbar = ({ user = null, onLogout }) => {
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 px-4 py-3 text-center text-sm font-bold text-white shadow-lg shadow-red-200"
+                  className="block rounded-2xl bg-linear-to-r from-red-600 via-rose-600 to-red-700 px-4 py-3 text-center text-sm font-bold text-white shadow-lg shadow-red-200"
                 >
                   Login
                 </Link>

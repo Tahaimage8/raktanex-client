@@ -27,7 +27,7 @@ export default function HeroBanner() {
     <section className="relative overflow-hidden bg-white px-6 py-16 lg:py-24">
       {/* background glow */}
       <div className="absolute -left-40 top-20 h-96 w-96 rounded-full bg-red-200/40 blur-3xl" />
-      <div className="absolute -bottom-40 right-0 h-[500px] w-[500px] rounded-full bg-rose-200/40 blur-3xl" />
+      <div className="absolute -bottom-40 right-0 h-125 w-125 rounded-full bg-rose-200/40 blur-3xl" />
 
       <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
         {/* LEFT SIDE */}
