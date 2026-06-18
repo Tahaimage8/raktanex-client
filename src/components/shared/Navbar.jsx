@@ -37,7 +37,7 @@ const Navbar = ({ user = null, onLogout }) => {
     },
     {
       label: "Search Donor",
-      href: "/search-donor",
+      href: "/search",
       show: true,
     },
   ];
