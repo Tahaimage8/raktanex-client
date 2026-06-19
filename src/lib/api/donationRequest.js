@@ -11,3 +11,11 @@ export const getOwnDonationRequest = async (requesterId, donationStatus = "") =>
 
   return res.json();
 };
+
+export const getDonationRequestById = async (id, requesterId) => {
+  const res = await fetch(
+    `${baseUrl}/api/donation-request/${id}?requesterId=${requesterId}`
+  );
+
+  return res.json();
+};

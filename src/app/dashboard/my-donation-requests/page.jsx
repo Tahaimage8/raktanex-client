@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import { Button } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
-import { getOwnDonationRequest } from "@/lib/api/donationRequest";
+import {
+  getOwnDonationRequest,
+  getDonationRequestById,
+} from "@/lib/api/donationRequest";
+import ViewRequest from "@/components/Dashboard/ViewRequest";
 
 const statusOptions = ["pending", "inprogress", "done", "canceled"];
 
@@ -19,6 +23,10 @@ const MyDonationRequestsPage = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  const [viewLoadingId, setViewLoadingId] = useState(null);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [selectedDonation, setSelectedDonation] = useState(null);
 
   useEffect(() => {
     const loadDonationRequests = async () => {
@@ -106,24 +114,35 @@ const MyDonationRequestsPage = () => {
     return pages;
   };
 
-  const handleDone = (donation) => {
+  const handleDone = (donation) => {};
 
+  const handleCancel = (donation) => {};
+
+  const handleEdit = (donation) => {};
+
+  const handleDelete = (donation) => {};
+
+  const handleView = async (donation) => {
+    const id = donation?._id?.$oid || donation?._id;
+
+    setViewLoadingId(id);
+
+    const data = await getDonationRequestById(id, requesterId);
+
+    setViewLoadingId(null);
+
+    if (data?.message) {
+      alert(data.message);
+      return;
+    }
+
+    setSelectedDonation(data);
+    setViewModalOpen(true);
   };
 
-  const handleCancel = (donation) => {
-
-  };
-
-  const handleEdit = (donation) => {
-
-  };
-
-  const handleDelete = (donation) => {
-
-  };
-
-  const handleView = (donation) => {
-
+  const closeViewModal = () => {
+    setViewModalOpen(false);
+    setSelectedDonation(null);
   };
 
   if (isPending) {
@@ -136,6 +155,12 @@ const MyDonationRequestsPage = () => {
 
   return (
     <section>
+      <ViewRequest
+        isOpen={viewModalOpen}
+        donation={selectedDonation}
+        onClose={closeViewModal}
+      />
+
       <div className="mb-6 rounded-3xl bg-white p-6 shadow-sm">
         <h1 className="text-3xl font-black text-slate-900">
           My Donation Requests
@@ -179,112 +204,116 @@ const MyDonationRequestsPage = () => {
           <>
             {/* Mobile Card View */}
             <div className="grid gap-4 md:hidden">
-              {currentDonations.map((donation) => (
-                <div
-                  key={donation._id}
-                  className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="text-base font-black text-slate-900">
-                        {donation.recipientName}
-                      </h3>
+              {currentDonations.map((donation) => {
+                const donationId = donation?._id?.$oid || donation?._id;
 
-                      <p className="mt-1 text-sm text-slate-500">
-                        {donation.recipientDistrict},{" "}
-                        {donation.recipientUpazila}
-                      </p>
+                return (
+                  <div
+                    key={donationId}
+                    className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h3 className="text-base font-black text-slate-900">
+                          {donation.recipientName}
+                        </h3>
+
+                        <p className="mt-1 text-sm text-slate-500">
+                          {donation.recipientDistrict},{" "}
+                          {donation.recipientUpazila}
+                        </p>
+                      </div>
+
+                      <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-600">
+                        {donation.donationStatus}
+                      </span>
                     </div>
 
-                    <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-600">
-                      {donation.donationStatus}
-                    </span>
-                  </div>
+                    <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <p className="text-xs font-bold text-slate-400">Date</p>
+                        <p className="font-semibold text-slate-700">
+                          {donation.donationDate}
+                        </p>
+                      </div>
 
-                  <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <p className="text-xs font-bold text-slate-400">Date</p>
-                      <p className="font-semibold text-slate-700">
-                        {donation.donationDate}
-                      </p>
+                      <div>
+                        <p className="text-xs font-bold text-slate-400">Time</p>
+                        <p className="font-semibold text-slate-700">
+                          {donation.donationTime}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-bold text-slate-400">Blood</p>
+                        <p className="font-black text-red-600">
+                          {donation.bloodGroup}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-bold text-slate-400">
+                          Donor Info
+                        </p>
+
+                        {donation.donationStatus === "inprogress" ? (
+                          <div>
+                            <p className="font-semibold text-slate-700">
+                              {donation.donorName || "No donor name"}
+                            </p>
+                            <p className="text-xs text-slate-500">
+                              {donation.donorEmail || "No donor email"}
+                            </p>
+                          </div>
+                        ) : (
+                          <p className="text-slate-400">N/A</p>
+                        )}
+                      </div>
                     </div>
 
-                    <div>
-                      <p className="text-xs font-bold text-slate-400">Time</p>
-                      <p className="font-semibold text-slate-700">
-                        {donation.donationTime}
-                      </p>
-                    </div>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {donation.donationStatus === "inprogress" && (
+                        <>
+                          <button
+                            onClick={() => handleDone(donation)}
+                            className="rounded-lg bg-green-100 px-3 py-2 text-xs font-bold text-green-700 hover:bg-green-300"
+                          >
+                            Done
+                          </button>
 
-                    <div>
-                      <p className="text-xs font-bold text-slate-400">Blood</p>
-                      <p className="font-black text-red-600">
-                        {donation.bloodGroup}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-xs font-bold text-slate-400">
-                        Donor Info
-                      </p>
-
-                      {donation.donationStatus === "inprogress" ? (
-                        <div>
-                          <p className="font-semibold text-slate-700">
-                            {donation.donorName || "No donor name"}
-                          </p>
-                          <p className="text-xs text-slate-500">
-                            {donation.donorEmail || "No donor email"}
-                          </p>
-                        </div>
-                      ) : (
-                        <p className="text-slate-400">N/A</p>
+                          <button
+                            onClick={() => handleCancel(donation)}
+                            className="rounded-lg bg-orange-100 px-3 py-2 text-xs font-bold text-orange-700 hover:bg-orange-300"
+                          >
+                            Cancel
+                          </button>
+                        </>
                       )}
+
+                      <button
+                        onClick={() => handleEdit(donation)}
+                        className="rounded-lg bg-blue-100 px-3 py-2 text-xs font-bold text-blue-700 hover:bg-blue-300"
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(donation)}
+                        className="rounded-lg bg-red-100 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-300"
+                      >
+                        Delete
+                      </button>
+
+                      <button
+                        onClick={() => handleView(donation)}
+                        className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-300"
+                      >
+                        {viewLoadingId === donationId ? "Loading..." : "View"}
+                      </button>
                     </div>
                   </div>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {donation.donationStatus === "inprogress" && (
-                      <>
-                        <button
-                          onClick={() => handleDone(donation)}
-                          className="rounded-lg bg-green-100 px-3 py-2 text-xs font-bold text-green-700 hover:bg-green-300"
-                        >
-                          Done
-                        </button>
-
-                        <button
-                          onClick={() => handleCancel(donation)}
-                          className="rounded-lg bg-orange-100 px-3 py-2 text-xs font-bold text-orange-700 hover:bg-orange-300"
-                        >
-                          Cancel
-                        </button>
-                      </>
-                    )}
-
-                    <button
-                      onClick={() => handleEdit(donation)}
-                      className="rounded-lg bg-blue-100 px-3 py-2 text-xs font-bold text-blue-700 hover:bg-blue-300"
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      onClick={() => handleDelete(donation)}
-                      className="rounded-lg bg-red-100 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-300"
-                    >
-                      Delete
-                    </button>
-
-                    <button
-                      onClick={() => handleView(donation)}
-                      className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-300"
-                    >
-                      View
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Desktop Table View */}
@@ -304,91 +333,97 @@ const MyDonationRequestsPage = () => {
                 </thead>
 
                 <tbody>
-                  {currentDonations.map((donation) => (
-                    <tr
-                      key={donation._id}
-                      className="border-b border-slate-100 text-sm text-slate-700"
-                    >
-                      <td className="px-4 py-4 font-bold">
-                        {donation.recipientName}
-                      </td>
+                  {currentDonations.map((donation) => {
+                    const donationId = donation?._id?.$oid || donation?._id;
 
-                      <td className="px-4 py-4">
-                        {donation.recipientDistrict},{" "}
-                        {donation.recipientUpazila}
-                      </td>
+                    return (
+                      <tr
+                        key={donationId}
+                        className="border-b border-slate-100 text-sm text-slate-700"
+                      >
+                        <td className="px-4 py-4 font-bold">
+                          {donation.recipientName}
+                        </td>
 
-                      <td className="px-4 py-4">{donation.donationDate}</td>
+                        <td className="px-4 py-4">
+                          {donation.recipientDistrict},{" "}
+                          {donation.recipientUpazila}
+                        </td>
 
-                      <td className="px-4 py-4">{donation.donationTime}</td>
+                        <td className="px-4 py-4">{donation.donationDate}</td>
 
-                      <td className="px-4 py-4 font-bold text-red-600">
-                        {donation.bloodGroup}
-                      </td>
+                        <td className="px-4 py-4">{donation.donationTime}</td>
 
-                      <td className="px-4 py-4">
-                        <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-600">
-                          {donation.donationStatus}
-                        </span>
-                      </td>
+                        <td className="px-4 py-4 font-bold text-red-600">
+                          {donation.bloodGroup}
+                        </td>
 
-                      <td className="px-4 py-4">
-                        {donation.donationStatus === "inprogress" ? (
-                          <div>
-                            <p>{donation.donorName || "No donor name"}</p>
-                            <p className="text-xs text-slate-500">
-                              {donation.donorEmail || "No donor email"}
-                            </p>
-                          </div>
-                        ) : (
-                          <span className="text-slate-400">N/A</span>
-                        )}
-                      </td>
+                        <td className="px-4 py-4">
+                          <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-600">
+                            {donation.donationStatus}
+                          </span>
+                        </td>
 
-                      <td className="px-4 py-4">
-                        <div className="flex flex-wrap gap-2">
-                          {donation.donationStatus === "inprogress" && (
-                            <>
-                              <button
-                                onClick={() => handleDone(donation)}
-                                className="rounded-lg bg-green-100 px-3 py-2 text-xs font-bold text-green-700 hover:bg-green-300"
-                              >
-                                Done
-                              </button>
-
-                              <button
-                                onClick={() => handleCancel(donation)}
-                                className="rounded-lg bg-orange-100 px-3 py-2 text-xs font-bold text-orange-700 hover:bg-orange-300"
-                              >
-                                Cancel
-                              </button>
-                            </>
+                        <td className="px-4 py-4">
+                          {donation.donationStatus === "inprogress" ? (
+                            <div>
+                              <p>{donation.donorName || "No donor name"}</p>
+                              <p className="text-xs text-slate-500">
+                                {donation.donorEmail || "No donor email"}
+                              </p>
+                            </div>
+                          ) : (
+                            <span className="text-slate-400">N/A</span>
                           )}
+                        </td>
 
-                          <button
-                            onClick={() => handleEdit(donation)}
-                            className="rounded-lg bg-blue-100 px-3 py-2 text-xs font-bold text-blue-700 hover:bg-blue-300"
-                          >
-                            Edit
-                          </button>
+                        <td className="px-4 py-4">
+                          <div className="flex flex-wrap gap-2">
+                            {donation.donationStatus === "inprogress" && (
+                              <>
+                                <button
+                                  onClick={() => handleDone(donation)}
+                                  className="rounded-lg bg-green-100 px-3 py-2 text-xs font-bold text-green-700 hover:bg-green-300"
+                                >
+                                  Done
+                                </button>
 
-                          <button
-                            onClick={() => handleDelete(donation)}
-                            className="rounded-lg bg-red-100 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-300"
-                          >
-                            Delete
-                          </button>
+                                <button
+                                  onClick={() => handleCancel(donation)}
+                                  className="rounded-lg bg-orange-100 px-3 py-2 text-xs font-bold text-orange-700 hover:bg-orange-300"
+                                >
+                                  Cancel
+                                </button>
+                              </>
+                            )}
 
-                          <button
-                            onClick={() => handleView(donation)}
-                            className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-300"
-                          >
-                            View
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                            <button
+                              onClick={() => handleEdit(donation)}
+                              className="rounded-lg bg-blue-100 px-3 py-2 text-xs font-bold text-blue-700 hover:bg-blue-300"
+                            >
+                              Edit
+                            </button>
+
+                            <button
+                              onClick={() => handleDelete(donation)}
+                              className="rounded-lg bg-red-100 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-300"
+                            >
+                              Delete
+                            </button>
+
+                            <button
+                              onClick={() => handleView(donation)}
+                              className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-300"
+                            >
+                              {viewLoadingId === donationId
+                                ? "Loading..."
+                                : "View"}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
