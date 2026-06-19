@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Input, TextArea } from "@heroui/react";
+import { Button, Input, TextArea, } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
+import { createDonationRequest } from "@/lib/actions/donationRequest";
+import toast from "react-hot-toast";
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -15,7 +17,7 @@ const selectClass =
 
 const getTableData = (data, tableName) => {
   const table = data.find(
-    (item) => item.type === "table" && item.name === tableName
+    (item) => item.type === "table" && item.name === tableName,
   );
 
   return table?.data || [];
@@ -99,15 +101,15 @@ const CreateDonationRequestPage = () => {
 
   const filteredDistricts = districts.filter(
     (district) =>
-      String(district.division_id) === String(formData.recipientDivision)
+      String(district.division_id) === String(formData.recipientDivision),
   );
 
   const filteredUpazilas = upazilas.filter(
     (upazila) =>
-      String(upazila.district_id) === String(formData.recipientDistrict)
+      String(upazila.district_id) === String(formData.recipientDistrict),
   );
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (userStatus === "blocked") {
@@ -116,15 +118,15 @@ const CreateDonationRequestPage = () => {
     }
 
     const selectedDivision = divisions.find(
-      (division) => String(division.id) === String(formData.recipientDivision)
+      (division) => String(division.id) === String(formData.recipientDivision),
     );
 
     const selectedDistrict = districts.find(
-      (district) => String(district.id) === String(formData.recipientDistrict)
+      (district) => String(district.id) === String(formData.recipientDistrict),
     );
 
     const selectedUpazila = upazilas.find(
-      (upazila) => String(upazila.id) === String(formData.recipientUpazila)
+      (upazila) => String(upazila.id) === String(formData.recipientUpazila),
     );
 
     const donationRequest = {
@@ -143,9 +145,15 @@ const CreateDonationRequestPage = () => {
       donationStatus: "pending",
     };
 
-    console.log("Donation Request Data:", donationRequest);
+    // console.log("Donation Request Data:", donationRequest);
 
-    alert("Console e donation request data dekhano hoyeche.");
+    const res = await createDonationRequest(donationRequest);
+    console.log(res)
+    if (res.insertedId) {
+      toast.success("Donation request created successfully");
+    } else {
+      toast.error("Something went wrong. Please try again.");
+    }
   };
 
   if (isPending) {
