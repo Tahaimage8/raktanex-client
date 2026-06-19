@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Input, TextArea, } from "@heroui/react";
+import { Button, Input, TextArea } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
 import { createDonationRequest } from "@/lib/actions/donationRequest";
 import toast from "react-hot-toast";
@@ -132,6 +132,7 @@ const CreateDonationRequestPage = () => {
     const donationRequest = {
       requesterName: user?.name,
       requesterEmail: user?.email,
+      requesterId: user?.id || user?._id,
       recipientName: formData.recipientName,
       recipientDivision: selectedDivision?.name,
       recipientDistrict: selectedDistrict?.name,
@@ -148,12 +149,13 @@ const CreateDonationRequestPage = () => {
     // console.log("Donation Request Data:", donationRequest);
 
     const res = await createDonationRequest(donationRequest);
-    console.log(res)
-    if (res.insertedId) {
+    console.log(res);
+    if (res?.insertedId) {
       toast.success("Donation request created successfully");
-    } else {
-      toast.error("Something went wrong. Please try again.");
+      return;
     }
+
+    toast.error("Something went wrong. Please try again.");
   };
 
   if (isPending) {
