@@ -117,7 +117,11 @@ const MyDonationRequestsPage = () => {
 
   const handleCancel = (donation) => {};
 
-  const handleEdit = (donation) => {};
+  const handleEdit = (donation) => {
+    const id = getDonationId(donation);
+
+    router.push(`/dashboard/my-donation-requests/${id}/edit`);
+  };
 
   const handleDelete = (donation) => {};
 

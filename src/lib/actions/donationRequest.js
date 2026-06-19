@@ -11,3 +11,18 @@ export const createDonationRequest = async (data) => {
 
   return res.json();
 };
+
+export const updateDonationRequest = async (id, requesterId, data) => {
+  const res = await fetch(
+    `${baseUrl}/api/donation-request/${id}?requesterId=${requesterId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    },
+  );
+
+  return res.json();
+};
