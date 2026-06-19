@@ -28,7 +28,8 @@ const Navbar = () => {
   const userAvatar =
     user?.image || "https://i.ibb.co.com/4pDNDk1/avatar.png";
 
-  const dashboardLink = `/dashboard/${userRole}`;
+  // const dashboardLink = `/dashboard/${userRole}`;
+  const dashboardLink = `/dashboard`;
 
   const canSeeFunding = userRole === "volunteer";
 
