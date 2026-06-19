@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
 import { getOwnDonationRequest } from "@/lib/api/donationRequest";
@@ -8,6 +9,8 @@ import { getOwnDonationRequest } from "@/lib/api/donationRequest";
 const statusOptions = ["pending", "inprogress", "done", "canceled"];
 
 const MyDonationRequestsPage = () => {
+  const router = useRouter();
+
   const { data: session, isPending } = authClient.useSession();
 
   const user = session?.user;
@@ -106,24 +109,22 @@ const MyDonationRequestsPage = () => {
     return pages;
   };
 
-  const handleDone = (donation) => {
-
+  const getDonationId = (donation) => {
+    return donation?._id?.$oid || donation?._id;
   };
 
-  const handleCancel = (donation) => {
+  const handleDone = (donation) => {};
 
-  };
+  const handleCancel = (donation) => {};
 
-  const handleEdit = (donation) => {
+  const handleEdit = (donation) => {};
 
-  };
-
-  const handleDelete = (donation) => {
-
-  };
+  const handleDelete = (donation) => {};
 
   const handleView = (donation) => {
+    const id = getDonationId(donation);
 
+    router.push(`/dashboard/my-donation-requests/${id}`);
   };
 
   if (isPending) {
@@ -177,11 +178,10 @@ const MyDonationRequestsPage = () => {
           </p>
         ) : (
           <>
-            {/* Mobile Card View */}
             <div className="grid gap-4 md:hidden">
               {currentDonations.map((donation) => (
                 <div
-                  key={donation._id}
+                  key={getDonationId(donation)}
                   className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -287,7 +287,6 @@ const MyDonationRequestsPage = () => {
               ))}
             </div>
 
-            {/* Desktop Table View */}
             <div className="hidden overflow-x-auto md:block">
               <table className="w-full min-w-250 border-collapse text-left">
                 <thead>
@@ -306,7 +305,7 @@ const MyDonationRequestsPage = () => {
                 <tbody>
                   {currentDonations.map((donation) => (
                     <tr
-                      key={donation._id}
+                      key={getDonationId(donation)}
                       className="border-b border-slate-100 text-sm text-slate-700"
                     >
                       <td className="px-4 py-4 font-bold">
