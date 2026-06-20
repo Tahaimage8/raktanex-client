@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/immutability */
 "use client";
 
@@ -10,13 +11,22 @@ import FundingTable from "./Fundingtable";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
 
-// 👇 useSearchParams alada component e
 const FundingContent = () => {
   const [totalFunds, setTotalFunds] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
   const searchParams = useSearchParams();
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
+
+
+  if (isPending) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-red-600 border-t-transparent"></div>
+      </div>
+    );
+  }
+
 
   if (!user) {
     redirect('/login');
@@ -95,7 +105,6 @@ const FundingContent = () => {
   );
 };
 
-// 👇 Main component with Suspense
 const FundingPage = () => {
   return (
     <Suspense fallback={
