@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/immutability */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { redirect, useSearchParams } from "next/navigation";
 
 import { fetchTotalFunds } from "@/lib/actions/fundActions";
@@ -10,18 +10,18 @@ import FundingTable from "./Fundingtable";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
 
-
-const FundingPage = () => {
+// 👇 useSearchParams alada component e
+const FundingContent = () => {
   const [totalFunds, setTotalFunds] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
   const searchParams = useSearchParams();
   const { data: session, isPending } = authClient.useSession();
-
   const user = session?.user;
 
-  if(!user){
-    redirect('/login')
+  if (!user) {
+    redirect('/login');
   }
+
   // Total fund load
   useEffect(() => {
     const loadTotal = async () => {
@@ -37,7 +37,6 @@ const FundingPage = () => {
     const sessionId = searchParams.get("session_id");
 
     if (status === "success" && sessionId) {
-
       handleSuccess(sessionId);
     } else if (status === "cancelled") {
       toast.error("Payment was cancelled. Feel free to try again.");
@@ -47,7 +46,6 @@ const FundingPage = () => {
 
   const handleSuccess = async (sessionId) => {
     try {
-
       await fetch("/api/save-fund", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -75,8 +73,6 @@ const FundingPage = () => {
               Manage and track your contributions to the community.
             </p>
           </div>
-          
-
           <GiveFundModal />
         </div>
 
@@ -96,6 +92,19 @@ const FundingPage = () => {
         </div>
       </div>
     </main>
+  );
+};
+
+// 👇 Main component with Suspense
+const FundingPage = () => {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-red-600 border-t-transparent"></div>
+      </div>
+    }>
+      <FundingContent />
+    </Suspense>
   );
 };
 
