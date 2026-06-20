@@ -113,7 +113,7 @@ const CreateDonationRequestPage = () => {
     event.preventDefault();
 
     if (userStatus === "blocked") {
-      alert("Your account is blocked. You cannot create donation request.");
+      toast.error("Your account is blocked. You cannot create donation request.");
       return;
     }
 

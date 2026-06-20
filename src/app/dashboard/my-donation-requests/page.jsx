@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
+
+import { DeleteDonationModal } from "@/components/Dashboard/DeleteDonationModal";
 import { getOwnDonationRequest } from "@/lib/api/donationRequest";
 
 const statusOptions = ["pending", "inprogress", "done", "canceled"];
@@ -123,8 +125,6 @@ const MyDonationRequestsPage = () => {
     router.push(`/dashboard/my-donation-requests/${id}/edit`);
   };
 
-  const handleDelete = (donation) => {};
-
   const handleView = (donation) => {
     const id = getDonationId(donation);
 
@@ -136,7 +136,9 @@ const MyDonationRequestsPage = () => {
   }
 
   if (!user) {
-    return <p className="text-sm font-bold text-red-600">Please login first.</p>;
+    return (
+      <p className="text-sm font-bold text-red-600">Please login first.</p>
+    );
   }
 
   return (
@@ -273,12 +275,10 @@ const MyDonationRequestsPage = () => {
                       Edit
                     </button>
 
-                    <button
-                      onClick={() => handleDelete(donation)}
-                      className="rounded-lg bg-red-100 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-300"
-                    >
-                      Delete
-                    </button>
+                    <DeleteDonationModal
+                      donation={donation}
+                      requesterId={requesterId}
+                    />
 
                     <button
                       onClick={() => handleView(donation)}
@@ -375,12 +375,10 @@ const MyDonationRequestsPage = () => {
                             Edit
                           </button>
 
-                          <button
-                            onClick={() => handleDelete(donation)}
-                            className="rounded-lg bg-red-100 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-300"
-                          >
-                            Delete
-                          </button>
+                          <DeleteDonationModal
+                            donation={donation}
+                            requesterId={requesterId}
+                          />
 
                           <button
                             onClick={() => handleView(donation)}
@@ -401,9 +399,8 @@ const MyDonationRequestsPage = () => {
         {donations.length > itemsPerPage && (
           <div className="mt-6 flex flex-col items-center justify-between gap-4 md:flex-row">
             <p className="text-sm font-semibold text-slate-500">
-              Showing {startIndex + 1}-
-              {Math.min(endIndex, donations.length)} of {donations.length}{" "}
-              requests
+              Showing {startIndex + 1}-{Math.min(endIndex, donations.length)} of{" "}
+              {donations.length} requests
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-2">

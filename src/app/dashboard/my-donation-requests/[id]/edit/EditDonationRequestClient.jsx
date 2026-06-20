@@ -2,13 +2,17 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { getDonationRequestById } from "@/lib/api/donationRequest";
 import { updateDonationRequest } from "@/lib/actions/donationRequest";
+import toast from "react-hot-toast";
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const EditDonationRequestClient = ({ id }) => {
+  const router = useRouter();
+
   const { data: session, isPending } = authClient.useSession();
 
   const user = session?.user;
@@ -86,12 +90,12 @@ const EditDonationRequestClient = ({ id }) => {
     setUpdating(false);
 
     if (result.modifiedCount > 0 || result.matchedCount > 0) {
-      alert("Donation request updated successfully");
-      window.location.href = "/dashboard/my-donation-requests";
+      toast.success("Donation request updated successfully");
+      router.push("/dashboard/my-donation-requests");
       return;
     }
 
-    alert("Update failed");
+    toast.error(result.message || "Update failed");
   };
 
   if (isPending) {
