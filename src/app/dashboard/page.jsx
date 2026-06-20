@@ -3,6 +3,9 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import DashboardAdmin from "@/components/Dashboard/DashboardAdmin";
+import DashboardDonor from "@/components/Dashboard/DashboardDonor";
+import DashboardVolunteer from "@/components/Dashboard/DashboardVolunteer";
 
 const DashboardPage = () => {
   const router = useRouter();
@@ -21,9 +24,7 @@ const DashboardPage = () => {
   if (isPending) {
     return (
       <div className="rounded-3xl bg-white p-8 shadow-sm">
-        <p className="text-sm font-bold text-red-600">
-          Loading dashboard...
-        </p>
+        <p className="text-sm font-bold text-red-600">Loading dashboard...</p>
       </div>
     );
   }
@@ -33,22 +34,34 @@ const DashboardPage = () => {
   }
 
   return (
-    <section>
-      <div className="rounded-3xl bg-white p-6 shadow-sm md:p-8">
-        <p className="inline-flex rounded-full bg-red-100 px-4 py-2 text-sm font-bold capitalize text-red-600">
-          {role} Dashboard
-        </p>
+    <div>
+      <section>
+        <div className="rounded-3xl bg-white p-6 shadow-sm md:p-8">
+          <p className="inline-flex rounded-full bg-red-100 px-4 py-2 text-sm font-bold capitalize text-red-600">
+            {role} Dashboard
+          </p>
 
-        <h1 className="mt-5 text-3xl font-black text-slate-900 md:text-4xl">
-          Welcome back, {user.name}
-        </h1>
+          <h1 className="mt-5 text-3xl font-black text-slate-900 md:text-4xl">
+            Welcome back, {user.name}
+          </h1>
 
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-          Welcome to your RaktaNex dashboard. From here, you can manage your
-          profile and donation related activities.
-        </p>
-      </div>
-    </section>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+            Welcome to your RaktaNex dashboard. From here, you can manage your
+            profile and donation related activities.
+          </p>
+        </div>
+      </section>
+
+      <section className="mt-6">
+        {role === "admin" && <DashboardAdmin />}
+
+        {role === "donor" && <DashboardDonor user={user} />}
+
+        {(role === "volunteer" || role === "volenter") && (
+          <DashboardVolunteer />
+        )}
+      </section>
+    </div>
   );
 };
 
