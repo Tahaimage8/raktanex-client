@@ -37,3 +37,20 @@ export const deleteDonationRequest = async (id, requesterId) => {
 
   return res.json();
 };
+
+// update donation status 
+
+export const updateDonationStatus = async (id, requesterId, donationStatus) => {
+  const res = await fetch(
+    `${baseUrl}/api/donation-request-status/${id}?requesterId=${requesterId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ donationStatus }),
+    }
+  );
+
+  return res.json();
+};

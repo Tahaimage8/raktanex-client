@@ -7,6 +7,8 @@ import { authClient } from "@/lib/auth-client";
 
 import { DeleteDonationModal } from "@/components/Dashboard/DeleteDonationModal";
 import { getOwnDonationRequest } from "@/lib/api/donationRequest";
+import { updateDonationStatus } from "@/lib/actions/donationRequest";
+import toast from "react-hot-toast";
 
 const statusOptions = ["pending", "inprogress", "done", "canceled"];
 
@@ -115,9 +117,59 @@ const MyDonationRequestsPage = () => {
     return donation?._id?.$oid || donation?._id;
   };
 
-  const handleDone = (donation) => {};
+  const handleDone = async (donation) => {
+    const id = getDonationId(donation);
 
-  const handleCancel = (donation) => {};
+    const result = await updateDonationStatus(id, requesterId, "done");
+
+    if (result.modifiedCount > 0 || result.matchedCount > 0) {
+      const updatedDonations = donations.map((singleDonation) => {
+        const singleDonationId = getDonationId(singleDonation);
+
+        if (singleDonationId === id) {
+          return {
+            ...singleDonation,
+            donationStatus: "done",
+          };
+        }
+
+        return singleDonation;
+      });
+
+      setDonations(updatedDonations);
+      toast.success("Donation request marked as done");
+      return;
+    }
+
+    toast.error("Status update failed");
+  };
+
+  const handleCancel = async (donation) => {
+    const id = getDonationId(donation);
+
+    const result = await updateDonationStatus(id, requesterId, "canceled");
+
+    if (result.modifiedCount > 0 || result.matchedCount > 0) {
+      const updatedDonations = donations.map((singleDonation) => {
+        const singleDonationId = getDonationId(singleDonation);
+
+        if (singleDonationId === id) {
+          return {
+            ...singleDonation,
+            donationStatus: "canceled",
+          };
+        }
+
+        return singleDonation;
+      });
+
+      setDonations(updatedDonations);
+      toast.success("Donation request canceled");
+      return;
+    }
+
+    toast.error("Status update failed");
+  };
 
   const handleEdit = (donation) => {
     const id = getDonationId(donation);
