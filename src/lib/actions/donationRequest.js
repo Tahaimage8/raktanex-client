@@ -32,15 +32,19 @@ export const deleteDonationRequest = async (id, requesterId) => {
     `${baseUrl}/api/donation-request/${id}?requesterId=${requesterId}`,
     {
       method: "DELETE",
-    }
+    },
   );
 
   return res.json();
 };
 
-// update donation status 
+// update donation status
 
-export const updateDonationStatus = async (id, requesterId, donationStatus) => {
+export const updateDonationStatus = async (
+  id,
+  requesterId,
+  donationStatus,
+) => {
   const res = await fetch(
     `${baseUrl}/api/donation-request-status/${id}?requesterId=${requesterId}`,
     {
@@ -49,7 +53,7 @@ export const updateDonationStatus = async (id, requesterId, donationStatus) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ donationStatus }),
-    }
+    },
   );
 
   return res.json();
@@ -63,6 +67,31 @@ export const confirmDonationRequest = async (id, donorInfo) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(donorInfo),
+  });
+
+  return res.json();
+};
+
+// admin/volunteer: update status 
+export const updateDonationStatusAsAdmin = async (id, donationStatus) => {
+  const res = await fetch(
+    `${baseUrl}/api/admin/donation-requests/${id}/status`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ donationStatus }),
+    },
+  );
+
+  return res.json();
+};
+
+// admin/volunteer: delete ANY donation request 
+export const deleteDonationRequestAsAdmin = async (id) => {
+  const res = await fetch(`${baseUrl}/api/admin/donation-requests/${id}`, {
+    method: "DELETE",
   });
 
   return res.json();

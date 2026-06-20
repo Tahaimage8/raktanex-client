@@ -21,8 +21,14 @@ export const getDonationRequestById = async (id, requesterId) => {
 };
 
 // donation-request public api
-export const getPendingDonationRequests = async () => {
-  const res = await fetch(`${baseUrl}/api/donation-requests`);
+export const getPendingDonationRequests = async (status = "") => {
+  let url = `${baseUrl}/api/donation-requests`;
+
+  if (status) {
+    url += `?status=${status}`;
+  }
+
+  const res = await fetch(url);
 
   return res.json();
 };

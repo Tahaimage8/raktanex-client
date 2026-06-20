@@ -20,15 +20,18 @@ export const getUserToken = async()=>{
 
 
 
+export const requireRole = async (allowedRoles) => {
+  const user = await getUserSession();
 
-export const requireRole = async(role)=>{
-    const user = await getUserSession()
+  if (!user) {
+    redirect("/login");
+  }
 
-    if(!user){
-        redirect('/login')
-    }
-    if(user.role !== role){
-      return  redirect('/unauthorized')
-    }
-    return user
-}
+  const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
+
+  if (!roles.includes(user.role)) {
+    redirect("/unauthorized");
+  }
+
+  return user;
+};
