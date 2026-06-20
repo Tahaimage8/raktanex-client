@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button, Card } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
 import { getPublicDonationRequestById } from "@/lib/api/donationRequest";
-
+import DonateConfirmModal from "@/components/Donation/DonateConfirmModal";
 
 const DonationRequestDetailsClient = ({ id }) => {
   const router = useRouter();
@@ -162,11 +162,18 @@ const DonationRequestDetailsClient = ({ id }) => {
             <Info title="Requester Email" value={donation.requesterEmail} />
           </div>
         </div>
-
         <div className="mt-6 flex justify-end">
-          <Button color="danger" className="font-black">
-            Donate
-          </Button>
+          {donation.donationStatus === "pending" ? (
+            <DonateConfirmModal
+              donation={donation}
+              user={user}
+              onSuccess={setDonation}
+            />
+          ) : (
+            <Button isDisabled color="danger" className="font-black">
+              Donation In Progress
+            </Button>
+          )}
         </div>
       </Card>
     </section>
@@ -191,9 +198,7 @@ const Info = ({ title, value }) => {
         {title}
       </p>
 
-      <p className="mt-2 text-sm font-bold text-slate-800">
-        {value || "N/A"}
-      </p>
+      <p className="mt-2 text-sm font-bold text-slate-800">{value || "N/A"}</p>
     </div>
   );
 };

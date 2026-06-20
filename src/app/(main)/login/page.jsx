@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
@@ -45,7 +45,7 @@ const Toast = ({ toast }) => (
   </AnimatePresence>
 );
 
-const LoginPage = () => {
+const LoginContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -176,6 +176,22 @@ const LoginPage = () => {
         </form>
       </section>
     </main>
+  );
+};
+
+const LoginPage = () => {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-red-50 px-4 py-14">
+          <section className="mx-auto w-full max-w-xl rounded-[2rem] bg-white p-8 shadow-2xl shadow-red-100 md:p-10">
+            <p className="text-sm font-bold text-red-600">Loading...</p>
+          </section>
+        </main>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   );
 };
 

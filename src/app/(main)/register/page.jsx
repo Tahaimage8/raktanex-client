@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "motion/react";
@@ -58,7 +58,7 @@ const Toast = ({ toast }) => (
   </AnimatePresence>
 );
 
-const RegisterPage = () => {
+const RegisterContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -184,8 +184,6 @@ const RegisterPage = () => {
       setLoadingText("");
       return;
     }
-
-    console.log("User created:", authResult);
 
     showToast(
       "success",
@@ -521,6 +519,22 @@ const RegisterPage = () => {
         </form>
       </section>
     </main>
+  );
+};
+
+const RegisterPage = () => {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-red-50 px-4 py-14">
+          <section className="mx-auto w-full max-w-5xl rounded-[2rem] bg-white p-8 shadow-2xl shadow-red-100 md:p-10">
+            <p className="text-sm font-bold text-red-600">Loading...</p>
+          </section>
+        </main>
+      }
+    >
+      <RegisterContent />
+    </Suspense>
   );
 };
 
