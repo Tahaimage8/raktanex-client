@@ -6,7 +6,7 @@ import { Button } from "@heroui/react";
 import toast from "react-hot-toast";
 import { usePagination } from "@/lib/hooks/usePagination";
 import { updateDonationStatusAsAdmin } from "@/lib/actions/donationRequest";
-import { getPendingDonationRequests } from "@/lib/api/donationRequest";
+import { getAllDonationRequests } from "@/lib/api/donationRequest";
 import { AdminDeleteDonationModal } from "./AdminDeleteDonationModal";
 
 
@@ -43,7 +43,7 @@ const AllDonationRequestsTable = () => {
     const loadDonations = async () => {
       setLoading(true);
 
-      const data = await getPendingDonationRequests(filterStatus);
+      const data = await getAllDonationRequests(filterStatus);
 
       setDonations(Array.isArray(data) ? data : []);
       setLoading(false);

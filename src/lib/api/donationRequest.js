@@ -32,6 +32,17 @@ export const getDonationRequestByIdaAdmin = async (id) => {
 };
 
 // donation-request public api
+export const getAllDonationRequests = async (status = "") => {
+  let url = `${baseUrl}/api/donation-requests`;
+
+  if (status) {
+    url += `?status=${status}`;
+  }
+
+  const res = await fetch(url);
+
+  return res.json();
+};
 export const getPendingDonationRequests = async (status = "") => {
   let url = `${baseUrl}/api/donation-requests/pending`;
 
