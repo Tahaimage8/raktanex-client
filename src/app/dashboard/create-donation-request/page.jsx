@@ -5,6 +5,7 @@ import { Button, Input, TextArea } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
 import { createDonationRequest } from "@/lib/actions/donationRequest";
 import toast from "react-hot-toast";
+import {useRouter } from "next/navigation";
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -25,8 +26,10 @@ const getTableData = (data, tableName) => {
 
 const CreateDonationRequestPage = () => {
   const { data: session, isPending } = authClient.useSession();
-
+  const router = useRouter();
   const user = session?.user;
+
+
   const userStatus = user?.status || "active";
 
   const [divisions, setDivisions] = useState([]);
@@ -45,7 +48,11 @@ const CreateDonationRequestPage = () => {
     donationTime: "",
     requestMessage: "",
   });
-
+  useEffect(() => {
+    if (!isPending && !user) {
+      router.push("/login?callbackUrl=/dashboard");
+    }
+  }, [isPending, user, router]);
   useEffect(() => {
     const loadLocationData = async () => {
       const divisionResponse = await fetch("/divisions.json");

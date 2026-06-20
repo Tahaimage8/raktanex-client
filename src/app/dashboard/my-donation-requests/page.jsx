@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { Button } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
 
@@ -18,6 +18,13 @@ const MyDonationRequestsPage = () => {
   const { data: session, isPending } = authClient.useSession();
 
   const user = session?.user;
+  useEffect(() => {
+    if (!isPending && !user) {
+      router.push("/login?callbackUrl=/dashboard");
+    }
+  }, [isPending, user, router]);
+
+
   const requesterId = user?.id || user?._id;
 
   const [donations, setDonations] = useState([]);
