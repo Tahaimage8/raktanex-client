@@ -20,6 +20,17 @@ export const getDonationRequestById = async (id, requesterId) => {
   return res.json();
 };
 
+
+
+// only admin volenter can see 
+export const getDonationRequestByIdaAdmin = async (id) => {
+  const res = await fetch(
+    `${baseUrl}/api/admin/donation-requests/${id}`
+  );
+
+  return res.json();
+};
+
 // donation-request public api
 export const getPendingDonationRequests = async (status = "") => {
   let url = `${baseUrl}/api/donation-requests`;

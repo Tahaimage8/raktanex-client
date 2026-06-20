@@ -1,7 +1,12 @@
+
 import DashboardSidebar from "@/components/Dashboard/DashboardSidebar";
 
-const DashboardLayout = ({ children }) => {
+
+
+const DashboardLayout = async({ children }) => {
+
   return (
+    
     <section className="min-h-screen bg-red-50 lg:flex">
       <DashboardSidebar />
 
