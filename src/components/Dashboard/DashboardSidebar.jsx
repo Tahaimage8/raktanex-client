@@ -90,7 +90,15 @@ const DashboardSidebar = () => {
   const role = user?.role || "donor";
   const status = user?.status || "active";
 
+  // exact-match-only routes: highlighting these on every sub-route would make
+  // "Dashboard" stay active no matter which dashboard page you're actually on
+  const exactMatchOnly = ["/dashboard"];
+
   const isActive = (href) => {
+    if (exactMatchOnly.includes(href)) {
+      return pathname === href;
+    }
+
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
