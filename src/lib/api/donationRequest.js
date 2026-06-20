@@ -33,7 +33,7 @@ export const getDonationRequestByIdaAdmin = async (id) => {
 
 // donation-request public api
 export const getPendingDonationRequests = async (status = "") => {
-  let url = `${baseUrl}/api/donation-requests`;
+  let url = `${baseUrl}/api/donation-requests/pending`;
 
   if (status) {
     url += `?status=${status}`;

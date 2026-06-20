@@ -123,13 +123,13 @@ const DashboardSidebar = () => {
       label: "My Donation Requests",
       href: "/dashboard/my-donation-requests",
       icon: icons.request,
-      show: role === "donor",
+      show: role === "donor" || role === "admin" || role === "volunteer",
     },
     {
       label: "Create Donation Request",
       href: "/dashboard/create-donation-request",
       icon: icons.create,
-      show: role === "donor",
+      show: role === "donor" || role === "admin" || role === "volunteer",
       disabled: status === "blocked",
     },
     {

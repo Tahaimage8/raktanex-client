@@ -159,6 +159,7 @@ const CreateDonationRequestPage = () => {
     console.log(res);
     if (res?.insertedId) {
       toast.success("Donation request created successfully");
+      router.push("/dashboard")
       return;
     }
 
