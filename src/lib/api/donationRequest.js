@@ -20,3 +20,9 @@ export const getDonationRequestById = async (id, requesterId) => {
   return res.json();
 };
 
+
+export const getPendingDonationRequests = async () => {
+  const res = await fetch(`${baseUrl}/api/donation-requests`);
+
+  return res.json();
+};
