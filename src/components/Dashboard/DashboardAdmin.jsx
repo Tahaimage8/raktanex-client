@@ -6,6 +6,7 @@ import { FaUsers, FaHandHoldingDollar, FaDroplet } from "react-icons/fa6";
 
 import { getAllUsers } from "@/lib/actions/user";
 import { getAllDonationRequests } from "@/lib/api/donationRequest";
+import { fetchTotalFunds } from "@/lib/actions/fundActions";
 
 // animates a number counting up from 0 to `value` whenever it changes
 const CountUpNumber = ({ value }) => {
@@ -59,7 +60,14 @@ const DashboardAdmin = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalDonationRequests, setTotalDonationRequests] = useState(0);
   const [loading, setLoading] = useState(true);
-
+  const [totalFunds, setTotalFunds] = useState(0);
+  useEffect(() => {
+    const loadTotal = async () => {
+      const total = await fetchTotalFunds();
+      setTotalFunds(total);
+    };
+    loadTotal();
+  }, []);
   useEffect(() => {
     const loadStats = async () => {
       setLoading(true);
@@ -93,7 +101,7 @@ const DashboardAdmin = () => {
         <StatCard
           icon={<FaHandHoldingDollar />}
           title="Total Funding"
-          value={0}
+         value={loading ? 0 : totalFunds}
           delay={0.1}
           footnote="Coming soon"
         />
