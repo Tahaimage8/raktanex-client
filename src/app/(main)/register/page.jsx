@@ -13,7 +13,7 @@ import {
   FaTriangleExclamation,
   FaUserPlus,
 } from "react-icons/fa6";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -59,6 +59,14 @@ const Toast = ({ toast }) => (
 );
 
 const RegisterPage = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const callbackUrlFromParams = searchParams.get("callbackUrl");
+  const callbackUrl = callbackUrlFromParams?.startsWith("/")
+    ? callbackUrlFromParams
+    : "/";
+
   const [divisions, setDivisions] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
@@ -68,7 +76,7 @@ const RegisterPage = () => {
   const [toast, setToast] = useState(null);
   const [fileName, setFileName] = useState("");
   const [avatarPreview, setAvatarPreview] = useState("");
-const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -178,22 +186,24 @@ const router = useRouter();
     }
 
     console.log("User created:", authResult);
-showToast(
-  "success",
-  "Registration successful",
-  "Your donor account is ready."
-);
 
-reset();
-setFileName("");
-setAvatarPreview("");
-setLoading(false);
-setLoadingText("");
-await authClient.signOut();
+    showToast(
+      "success",
+      "Registration successful",
+      "Your donor account is ready."
+    );
 
-setTimeout(() => {
-    router.push("/login");
-}, 1200);
+    reset();
+    setFileName("");
+    setAvatarPreview("");
+    setLoading(false);
+    setLoadingText("");
+
+    await authClient.signOut();
+
+    setTimeout(() => {
+      router.push(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+    }, 1200);
   };
 
   return (
@@ -501,7 +511,10 @@ setTimeout(() => {
 
           <p className="text-center text-sm text-slate-500">
             Already have an account?{" "}
-            <Link href="/login" className="font-bold text-red-600">
+            <Link
+              href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+              className="font-bold text-red-600"
+            >
               Login
             </Link>
           </p>

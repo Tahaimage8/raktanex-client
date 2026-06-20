@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { authClient } from "@/lib/auth-client";
@@ -47,6 +47,12 @@ const Toast = ({ toast }) => (
 
 const LoginPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const callbackUrlFromParams = searchParams.get("callbackUrl");
+  const callbackUrl = callbackUrlFromParams?.startsWith("/")
+    ? callbackUrlFromParams
+    : "/";
 
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
@@ -82,7 +88,7 @@ const LoginPage = () => {
     showToast("success", "Login successful", "Welcome back to RaktaNex.");
 
     setTimeout(() => {
-      router.push("/");
+      router.push(callbackUrl);
       router.refresh();
     }, 700);
   };
@@ -160,7 +166,10 @@ const LoginPage = () => {
 
           <p className="text-center text-sm text-slate-500">
             Don&apos;t have an account?{" "}
-            <Link href="/register" className="font-bold text-red-600">
+            <Link
+              href={`/register?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+              className="font-bold text-red-600"
+            >
               Register
             </Link>
           </p>

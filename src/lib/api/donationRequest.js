@@ -20,9 +20,15 @@ export const getDonationRequestById = async (id, requesterId) => {
   return res.json();
 };
 
-
+// donation-request public api
 export const getPendingDonationRequests = async () => {
   const res = await fetch(`${baseUrl}/api/donation-requests`);
+
+  return res.json();
+};
+// donation-request single data private api
+export const getPublicDonationRequestById = async (id) => {
+  const res = await fetch(`${baseUrl}/api/donation-requests/${id}`);
 
   return res.json();
 };
