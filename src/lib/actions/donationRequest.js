@@ -96,3 +96,17 @@ export const deleteDonationRequestAsAdmin = async (id) => {
 
   return res.json();
 };
+export const updateDonationRequestByAdmin = async (id,data) => {
+  const res = await fetch(
+    `${baseUrl}/api/admin/donation-request/${id}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    },
+  );
+
+  return res.json();
+};
