@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/immutability */
 "use client";
 
@@ -18,41 +17,29 @@ const FundingContent = () => {
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
 
-
-  if (isPending) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-red-600 border-t-transparent"></div>
-      </div>
-    );
-  }
-
-
-  if (!user) {
-    redirect('/login');
-  }
-
-  // Total fund load
   useEffect(() => {
-    const loadTotal = async () => {
-      const total = await fetchTotalFunds();
-      setTotalFunds(total);
-    };
-    loadTotal();
-  }, [refreshKey]);
-
-  // Payment success/cancel handle
-  useEffect(() => {
-    const status = searchParams.get("status");
-    const sessionId = searchParams.get("session_id");
-
-    if (status === "success" && sessionId) {
-      handleSuccess(sessionId);
-    } else if (status === "cancelled") {
-      toast.error("Payment was cancelled. Feel free to try again.");
-      window.history.replaceState({}, "", "/funding");
+    if (!isPending && user) {
+      const loadTotal = async () => {
+        const total = await fetchTotalFunds();
+        setTotalFunds(total);
+      };
+      loadTotal();
     }
-  }, [searchParams]);
+  }, [refreshKey, isPending, user]);
+
+  useEffect(() => {
+    if (!isPending && user) {
+      const status = searchParams.get("status");
+      const sessionId = searchParams.get("session_id");
+
+      if (status === "success" && sessionId) {
+        handleSuccess(sessionId);
+      } else if (status === "cancelled") {
+        toast.error("Payment was cancelled. Feel free to try again.");
+        window.history.replaceState({}, "", "/funding");
+      }
+    }
+  }, [searchParams, isPending, user]);
 
   const handleSuccess = async (sessionId) => {
     try {
@@ -70,10 +57,22 @@ const FundingContent = () => {
     }
   };
 
+
+  if (isPending) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-red-600 border-t-transparent"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    redirect('/login');
+  }
+
   return (
     <main className="min-h-screen bg-red-50 px-4 py-10 md:px-8">
       <div className="mx-auto max-w-6xl">
-        {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-black text-slate-900 md:text-4xl">
@@ -86,7 +85,6 @@ const FundingContent = () => {
           <GiveFundModal />
         </div>
 
-        {/* Total Funds Card */}
         <div className="mt-6">
           <div className="rounded-2xl bg-linear-to-r from-red-500 to-red-700 p-6 text-white shadow-lg">
             <p className="text-sm font-medium text-red-100">Total Funds Raised</p>
@@ -96,7 +94,6 @@ const FundingContent = () => {
           </div>
         </div>
 
-        {/* Table */}
         <div className="mt-8">
           <FundingTable key={refreshKey} />
         </div>

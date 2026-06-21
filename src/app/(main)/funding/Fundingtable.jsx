@@ -48,7 +48,9 @@ const FundingTable = () => {
     return (
       <div className="py-20 text-center">
         <span className="text-4xl">🩸</span>
-        <p className="mt-4 text-slate-500">No contributions yet. Be the first!</p>
+        <p className="mt-4 text-slate-500">
+          No contributions yet. Be the first!
+        </p>
       </div>
     );
   }
@@ -61,7 +63,7 @@ const FundingTable = () => {
           <Table.ScrollContainer>
             <Table.Content>
               <Table.Header>
-                <Table.Column>Donor</Table.Column>
+                <Table.Column isRowHeader>Donor</Table.Column>
                 <Table.Column>Transaction ID</Table.Column>
                 <Table.Column>Date</Table.Column>
                 <Table.Column>Amount</Table.Column>
@@ -75,7 +77,9 @@ const FundingTable = () => {
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-50 text-sm font-black text-red-600">
                           {getInitial(fund.userName)}
                         </div>
-                        <p className="font-bold text-slate-900">{fund.userName}</p>
+                        <p className="font-bold text-slate-900">
+                          {fund.userName}
+                        </p>
                       </div>
                     </Table.Cell>
                     <Table.Cell>
@@ -111,7 +115,10 @@ const FundingTable = () => {
       {/* Mobile Cards */}
       <div className="grid gap-3 md:hidden">
         {currentFundings.map((fund) => (
-          <div key={fund._id} className="rounded-2xl border border-slate-100 p-4">
+          <div
+            key={fund._id}
+            className="rounded-2xl border border-slate-100 p-4"
+          >
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-50 text-sm font-black text-red-600">
                 {getInitial(fund.userName)}
