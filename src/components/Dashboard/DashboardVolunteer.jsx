@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, useMotionValue, useTransform, animate } from "motion/react";
 import { FaUsers, FaHandHoldingDollar, FaDroplet } from "react-icons/fa6";
 
-import { getAllUsers } from "@/lib/actions/user";
+import { getAllUsersVolente } from "@/lib/actions/user";
 import { getAllDonationRequests } from "@/lib/api/donationRequest";
 import { fetchTotalFunds } from "@/lib/actions/fundActions";
 
@@ -60,19 +60,22 @@ const DashboardVolunteer = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalDonationRequests, setTotalDonationRequests] = useState(0);
   const [loading, setLoading] = useState(true);
- const [totalFunds, setTotalFunds] = useState(0);
+  const [totalFunds, setTotalFunds] = useState(0);
+
   useEffect(() => {
     const loadTotal = async () => {
       const total = await fetchTotalFunds();
       setTotalFunds(total);
     };
+
     loadTotal();
   }, []);
+
   useEffect(() => {
     const loadStats = async () => {
       setLoading(true);
 
-      const usersData = await getAllUsers(1, 1);
+      const usersData = await getAllUsersVolente();
       const donationData = await getAllDonationRequests("all");
 
       setTotalUsers(usersData?.totalUsers || 0);
@@ -88,7 +91,9 @@ const DashboardVolunteer = () => {
 
   return (
     <div className="rounded-3xl bg-white p-6 shadow-sm md:p-8">
-      <h2 className="text-2xl font-black text-slate-900"> Volunteer Overview</h2>
+      <h2 className="text-2xl font-black text-slate-900">
+        Volunteer Overview
+      </h2>
 
       <div className="mt-6 grid gap-5 md:grid-cols-3">
         <StatCard

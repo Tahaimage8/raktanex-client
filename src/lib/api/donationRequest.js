@@ -1,3 +1,6 @@
+
+import { authClient } from "../auth-client";
+
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const getOwnDonationRequest = async (requesterId, donationStatus = "") => {
@@ -56,7 +59,18 @@ export const getPendingDonationRequests = async (status = "") => {
 };
 // donation-request single data private api
 export const getPublicDonationRequestById = async (id) => {
-  const res = await fetch(`${baseUrl}/api/donation-requests/${id}`);
+    const { data: token } = await authClient.token();
+  const res = await fetch(`${baseUrl}/api/donation-requests/${id}`, {
+    headers: {
+      authorization: `Bearer ${token.token}`,
+    },
+  });
 
   return res.json();
 };
+
+// if component is server then do it 
+  // const {token} = await auth.api.getAccessToken({
+  //   headers: await headers()
+  // })
+  // console.log(token)

@@ -18,6 +18,7 @@ const UsersTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const [actionLoadingId, setActionLoadingId] = useState(null);
 
   const limit = 10;
@@ -26,12 +27,26 @@ const UsersTable = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
+      setErrorMessage("");
 
       const data = await getAllUsers(currentPage, limit, statusFilter);
 
+      // if the request failed, the backend sends back { message: "..." }
+      // instead of { users: [...] } - catch that instead of crashing on .map
+      if (!data || !Array.isArray(data.users)) {
+        setErrorMessage(
+          data?.message || "Could not load users. Please try again.",
+        );
+        setUsers([]);
+        setTotalUsers(0);
+        setTotalPages(1);
+        setLoading(false);
+        return;
+      }
+
       setUsers(data.users);
-      setTotalUsers(data.totalUsers);
-      setTotalPages(data.totalPages);
+      setTotalUsers(data.totalUsers || 0);
+      setTotalPages(data.totalPages || 1);
 
       setLoading(false);
     };
@@ -112,6 +127,10 @@ const UsersTable = () => {
       {loading ? (
         <p className="py-10 text-center text-sm font-bold text-red-600">
           Loading users...
+        </p>
+      ) : errorMessage ? (
+        <p className="py-10 text-center text-sm font-bold text-red-600">
+          {errorMessage}
         </p>
       ) : (
         <>

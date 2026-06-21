@@ -50,7 +50,7 @@ const FundingContent = () => {
       });
 
       toast.success("Thank you for your donation! 🩸");
-      setRefreshKey(prev => prev + 1);
+      setRefreshKey(prev => prev + 1); 
       window.history.replaceState({}, "", "/funding");
     } catch (error) {
       console.error("Error:", error);
