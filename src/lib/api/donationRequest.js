@@ -4,13 +4,18 @@ import { authClient } from "../auth-client";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const getOwnDonationRequest = async (requesterId, donationStatus = "") => {
+    const { data: token } = await authClient.token();
   let url = `${baseUrl}/api/myDonations?requesterId=${requesterId}`;
 
   if (donationStatus) {
     url = `${url}&donationStatus=${donationStatus}`;
   }
 
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    headers: {
+      authorization: `Bearer ${token.token}`,
+    },
+  });
 
   return res.json();
 };

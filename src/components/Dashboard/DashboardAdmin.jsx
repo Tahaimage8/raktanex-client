@@ -103,7 +103,6 @@ const DashboardAdmin = () => {
           title="Total Funding"
          value={loading ? 0 : totalFunds}
           delay={0.1}
-          footnote="Coming soon"
         />
 
         <StatCard
