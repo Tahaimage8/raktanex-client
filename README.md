@@ -4,7 +4,7 @@
 LifeFlow (RaktaNex) is a full-stack blood donation platform that connects donors, volunteers, and administrators to streamline blood request fulfillment and fundraising. This repository contains the Next.js client application with some server-side Next API handlers (Stripe checkout + session handling). The client integrates with a backend REST API for users, donation requests, and funds.
 
 ## 🌐 Live URL
-[Your-Deployed-Link-Here]
+[https://raktanex-client.vercel.app](https://raktanex-client.vercel.app)
 
 ## ✨ Key Features
 
