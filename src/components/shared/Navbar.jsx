@@ -47,7 +47,7 @@ const Navbar = () => {
     {
       label: "Funding",
       href: "/funding",
-      show: true,
+      show: isLoggedIn,
     },
     {
       label: "Search Donor",

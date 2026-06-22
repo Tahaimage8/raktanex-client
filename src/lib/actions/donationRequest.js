@@ -35,10 +35,14 @@ export const updateDonationRequest = async (id, requesterId, data) => {
 };
 // delete donation
 export const deleteDonationRequest = async (id, requesterId) => {
+    const { data: token } = await authClient.token();
   const res = await fetch(
     `${baseUrl}/api/donation-request/${id}?requesterId=${requesterId}`,
     {
       method: "DELETE",
+       headers: {
+        authorization: `Bearer ${token.token}`,
+      },
     },
   );
 
@@ -48,12 +52,14 @@ export const deleteDonationRequest = async (id, requesterId) => {
 // update donation status
 
 export const updateDonationStatus = async (id, requesterId, donationStatus) => {
+  const { data: token } = await authClient.token();
   const res = await fetch(
     `${baseUrl}/api/donation-request-status/${id}?requesterId=${requesterId}`,
     {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        authorization: `Bearer ${token.token}`,
       },
       body: JSON.stringify({ donationStatus }),
     },
@@ -64,10 +70,12 @@ export const updateDonationStatus = async (id, requesterId, donationStatus) => {
 
 // confirm DOnation Request
 export const confirmDonationRequest = async (id, donorInfo) => {
+  const { data: token } = await authClient.token();
   const res = await fetch(`${baseUrl}/api/donation-requests/${id}/donate`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
+      authorization: `Bearer ${token.token}`,
     },
     body: JSON.stringify(donorInfo),
   });

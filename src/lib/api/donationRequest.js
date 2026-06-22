@@ -1,10 +1,12 @@
-
 import { authClient } from "../auth-client";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-export const getOwnDonationRequest = async (requesterId, donationStatus = "") => {
-    const { data: token } = await authClient.token();
+export const getOwnDonationRequest = async (
+  requesterId,
+  donationStatus = "",
+) => {
+  const { data: token } = await authClient.token();
   let url = `${baseUrl}/api/myDonations?requesterId=${requesterId}`;
 
   if (donationStatus) {
@@ -21,20 +23,22 @@ export const getOwnDonationRequest = async (requesterId, donationStatus = "") =>
 };
 
 export const getDonationRequestById = async (id, requesterId) => {
+  const { data: token } = await authClient.token();
   const res = await fetch(
-    `${baseUrl}/api/donation-request/${id}?requesterId=${requesterId}`
+    `${baseUrl}/api/donation-request/${id}?requesterId=${requesterId}`,
+    {
+      headers: {
+        authorization: `Bearer ${token.token}`,
+      },
+    },
   );
 
   return res.json();
 };
 
-
-
-// only admin volenter can see 
+// only admin volenter can see
 export const getDonationRequestByIdaAdmin = async (id) => {
-  const res = await fetch(
-    `${baseUrl}/api/admin/donation-requests/${id}`
-  );
+  const res = await fetch(`${baseUrl}/api/admin/donation-requests/${id}`);
 
   return res.json();
 };
@@ -64,7 +68,7 @@ export const getPendingDonationRequests = async (status = "") => {
 };
 // donation-request single data private api
 export const getPublicDonationRequestById = async (id) => {
-    const { data: token } = await authClient.token();
+  const { data: token } = await authClient.token();
   const res = await fetch(`${baseUrl}/api/donation-requests/${id}`, {
     headers: {
       authorization: `Bearer ${token.token}`,
@@ -74,8 +78,8 @@ export const getPublicDonationRequestById = async (id) => {
   return res.json();
 };
 
-// if component is server then do it 
-  // const {token} = await auth.api.getAccessToken({
-  //   headers: await headers()
-  // })
-  // console.log(token)
+// if component is server then do it
+// const {token} = await auth.api.getAccessToken({
+//   headers: await headers()
+// })
+// console.log(token)
